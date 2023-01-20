@@ -24,7 +24,10 @@ section code
 	jl .clear
 
 mov eax, text1
-push .print
+mov ecx, 3 * 2 * 80
+push .end
+
+call .print
 
 .print:
 	mov dl, byte [eax + ebx]
@@ -44,6 +47,7 @@ push .print
 	ret
 
 .end:
+	mov byte [es:0x00], 'L' ; FIXME: Not printing L on the first line
 	jmp $
 
 text: db 'Hello, World!', 0
