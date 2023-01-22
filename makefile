@@ -13,6 +13,7 @@ bootloader:
 
 clear:
 	rm -f boot/boot.img
+	rm -r boot/bin
 
 run:
 	qemu-system-x86_64 -L "/usr/share/doc/qemu-system-x86" -drive format=raw,file=os.img

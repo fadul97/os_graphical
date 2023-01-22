@@ -1,6 +1,6 @@
 char* video_memory;
 
-int start(){
+int _start(){
     video_memory = (char *)0xb8000;
 
     for(int i = 0; i < 2 * 25 * 80; i += 2){

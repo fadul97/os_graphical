@@ -1,6 +1,6 @@
 [bits 32]
 
 START:
-[extern start]
-    call start
+[extern _start]
+    call _start
     jmp $
