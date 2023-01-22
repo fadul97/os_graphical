@@ -3,49 +3,15 @@
 
 section code
 
-.init:
-	mov eax, 0xb800
-	mov es, eax
-	mov eax, 0 ; Set eax to 0 -> i = 0
-	mov ebx, 0 ; Index of character in the string we are printing
-	mov ecx, 0 ; Actual address of the character on the screen
-	mov dl, 0 ; Store actual value that we are printing to the screen
-
-.clear:
-	mov byte [es:eax], 0 ; Move black character to current text address
-	inc eax;
-	mov byte [es:eax], 0x30 ; Move background color and character color to the next address
-	inc eax;
-
-	cmp eax, 2 * 25 * 80
-
-	jl .clear
-
-mov eax, welcome
-mov ecx, 0 * 2 * 80
-
-call .print
-
-jmp .switch
-
-.print:
-	mov dl, byte [eax + ebx]
-
-	cmp dl, 0
-	je .print_end
-
-	mov byte [es:ecx], dl
-
-	inc ebx
-	inc ecx
-	inc ecx
-
-	jmp .print
-
-.print_end:
-	ret
-
 .switch:
+	mov bx, 0x1000 ; Location where code is loaded from hard disk
+	mov ah, 0x02
+	mov al, 30 ; Number of sectors to read from hard disk
+	mov ch, 0x00
+	mov dh, 0x00
+	mov cl, 0x02
+	int 0x13
+
 	cli ; Turn off interrupts
 	lgdt [gdt_descriptor] ; Load GDT Table
 
@@ -53,7 +19,7 @@ jmp .switch
 	or eax, 0x1
 	mov cr0, eax ; Make the switch
 
-	jmp protected_start
+	jmp code_seg:protected_start
 
 welcome: db 'Welcome to GraphicalOS!', 0
 
@@ -70,6 +36,7 @@ protected_start:
 	mov ebp, 0x90000
 	mov esp, ebp
 
+	call 0x1000
 	jmp $
 
 gdt_begin:
